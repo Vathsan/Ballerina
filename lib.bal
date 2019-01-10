@@ -8,10 +8,10 @@ gmail:GmailConfiguration gmailConfig = {
     clientConfig: {
         auth: {
             scheme: http:OAUTH2,
-            accessToken: "ya29.GluMBseTwcJpKm8_5ESeW8ZKZzWDpQww8U2ADfu8TYhcBleO3o-_Zk5JZb0OSnM_lCtUdAZAWKBiz2e2bWEJze4l71LSdJ_VEuidHT9ciOuVppsekf51DXJtmupG",
-            clientId: "83141550683-7udrjf50cv834vtg61uv7poebg0ead39.apps.googleusercontent.com",
-            clientSecret: "KIyKSml7Gmnki7qMs_DVw9_A",
-            refreshToken: "1/GXPV_77zoBI8O-OZxzWq8FsfTgyA2uk8oq3dkRQ5K_0"
+            accessToken: "",
+            clientId: "",
+            clientSecret: "",
+            refreshToken: ""
         }
     }
 };
@@ -19,21 +19,22 @@ gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
     clientConfig: {
         auth: {
             scheme: http:OAUTH2,
-            accessToken: "ya29.GluMBseTwcJpKm8_5ESeW8ZKZzWDpQww8U2ADfu8TYhcBleO3o-_Zk5JZb0OSnM_lCtUdAZAWKBiz2e2bWEJze4l71LSdJ_VEuidHT9ciOuVppsekf51DXJtmupG",
-            clientId: "83141550683-7udrjf50cv834vtg61uv7poebg0ead39.apps.googleusercontent.com",
-            clientSecret: "KIyKSml7Gmnki7qMs_DVw9_A",
-            refreshToken: "1/GXPV_77zoBI8O-OZxzWq8FsfTgyA2uk8oq3dkRQ5K_0"
+            accessToken: "",
+            clientId: "",
+            clientSecret: "",
+            refreshToken: ""
         }
     }
 };
 gsheets4:Client spreadsheetClient = new(spreadsheetConfig);
 gmail:Client gmailClient = new(gmailConfig);
 
+
 function getStudentDetailsFromGSheet() returns string[][]|error {
-    //Read all the values from the sheet
-    string[][] values = check spreadsheetClient->getSheetValues("1MQvXiG2VTzOFSqamjw27cszAjDrpV9mGwtlJjFdLs6E", "Marks");
-    log:printInfo("Retrieved student details from spreadsheet id: " + "1MQvXiG2VTzOFSqamjw27cszAjDrpV9mGwtlJjFdLs6E" + " ; sheet name: "
-            + "Marks");
+    //Read all the values from the sheet. Replace Spread_Sheet_ID, Spread_Sheet_Name with your spreadsheet's id, name
+    string[][] values = check spreadsheetClient->getSheetValues("Spread_Sheet_ID", "Spread_Sheet_Name");
+    log:printInfo("Retrieved student details from spreadsheet id: " + "Spread_Sheet_ID" + " ; sheet name: "
+            + "Spread_Sheet_Name");
    return values;
 }
 
@@ -59,14 +60,14 @@ function printStudentDetailsFromGSheet() returns boolean{
 
 function setCellDetailsInGSheet(string column, int row, string data) returns boolean{
     boolean isSuccess = false;
-    var cellData = spreadsheetClient->setCellData("1MQvXiG2VTzOFSqamjw27cszAjDrpV9mGwtlJjFdLs6E", "Marks", column, row, data);
+    var cellData = spreadsheetClient->setCellData("Spread_Sheet_ID", "Spread_Sheet_Name", column, row, data); //Use your spreadsheet's id, name
     isSuccess = true;
     return isSuccess;
 }
 function setStudentDetailsInGSheet(string cell_start, string cell_end, string name, string subject, int marks, string email) returns boolean{
     boolean isSuccess = false;
     string [][] data = [[name, subject, string.convert(marks), email]];
-    var setData = spreadsheetClient->setSheetValues("1MQvXiG2VTzOFSqamjw27cszAjDrpV9mGwtlJjFdLs6E", "Marks", topLeftCell = cell_start, bottomRightCell = cell_end, data);
+    var setData = spreadsheetClient->setSheetValues("Spread_Sheet_ID", "Spread_Sheet_Name", topLeftCell = cell_start, bottomRightCell = cell_end, data); //Use your spreadsheet's id, name
     isSuccess = true;
     return isSuccess;
 }
@@ -75,12 +76,12 @@ function setStudentDetailsInGSheet(string cell_start, string cell_end, string na
 function sendMail(string studentEmail, string name, string subject, string marks)returns boolean{
     gmail:MessageRequest messageRequest = {};
     messageRequest.recipient = studentEmail;
-    messageRequest.sender = "srivathsanmail@gmail.com";
+    messageRequest.sender = "";         //Include sender's email
     messageRequest.subject = subject;
     messageRequest.messageBody = "Hi " + name + "," + "\n" + "Your examination mark is " + marks;
     messageRequest.contentType = gmail:TEXT_HTML;
 
-    var sendMessageResponse = gmailClient->sendMessage("srivathsanmail@gmail.com", untaint messageRequest);
+    var sendMessageResponse = gmailClient->sendMessage("sender's email", untaint messageRequest); //type in sender's email
     string messageId;
     string threadId;
     if (sendMessageResponse is (string, string)){
