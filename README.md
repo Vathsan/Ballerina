@@ -9,4 +9,4 @@ Obtain the spreadsheet id by extracting the value between the "/d/" and the "/ed
 
 Replace sheetID and sheetName with yours as indicated in the code
 
-The module can be run on terminal from the parent folder using the following command: 'Ballerina run module'
+The module can be run on terminal from the parent folder using the following command: `Ballerina run module`
