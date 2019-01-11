@@ -5,6 +5,7 @@ import ballerina/log;
 import ballerina/io;
 import ballerina/config;
 
+//Configure both endpoints with your tokens
 gmail:GmailConfiguration gmailConfig = {
     clientConfig: {
         auth: {
