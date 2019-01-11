@@ -1,7 +1,6 @@
 import ballerina/io;
 
 public function main() {
-
     int operation = 0;
     while (operation != 5) {
         // print options menu to choose from
@@ -33,18 +32,75 @@ public function main() {
         if (operation == 1) {
             var op = printStudentDetailsFromGSheet();
         } else if (operation == 2) {
-            string column = io:readln("Enter column choice A - D: ");
-            string srow = io:readln("Enter row: ");
-            var row = int.convert(srow);
-            int rowNumber = 0;
-            if (row is int) {
-                rowNumber = row;
-            } else {
-                io:println("Invalid row number \n");
-            continue;
+            var op = printStudentDetailsFromGSheet();
+            string column = "";
+            string col = "";
+            boolean run1 = true;
+            while(run1) {
+                column = io:readln("Enter column choice A - D: ");
+                if (column == "A" || column == "a" || column == "B" || column == "b" || column == "C" || column == "c"
+                    || column == "D" || column == "d") {
+                    col = column;
+                    run1 = false;
+                } else {
+                    io:println("Invalid column letter \n");
+                    continue;
+                }
             }
-            string data = io:readln("Enter cell data: ");
-            var op = setCellDetailsInGSheet(column, rowNumber, data);
+            int row_num = 0;
+            var details = getStudentDetailsFromGSheet();
+            if (details is error) {
+                log:printError("Failed to retrieve student details from GSheet", err = details);
+            } else {
+                row_num = details.length();
+            }
+            boolean run2 = true;
+            int finalRowNumber;
+            int rowNumber = 0;
+            while (run2){
+                string srow = io:readln("Enter row: ");
+                var row = int.convert(srow);
+                if (row is int) {
+                    rowNumber = row;
+                }else {
+                    io:println("Invalid row number \n");
+                    continue;
+                }
+
+                if((rowNumber > 1) && (rowNumber <= (row_num))){
+                    finalRowNumber = rowNumber;
+                    run2 = false;
+                }else {
+                    io:println("Row does not exist \n");
+                    continue;
+                }
+            }
+            boolean run3 = true;
+            while(run3) {
+                string data = io:readln("Enter cell data: ");
+                if ((col.equalsIgnoreCase("C"))) {
+                    var marks = int.convert(data);
+                    if (marks is int) {
+                        var op1 = setCellDetailsInGSheet(column, rowNumber, string.convert(marks));
+                        run3 = false;
+                    } else {
+                        io:println("Invalid cell input. Enter a number");
+                        continue;
+                    }
+                } else if (col.equalsIgnoreCase("D")) {
+                    if(data.contains("@")){
+                        var op2 = setCellDetailsInGSheet(column, rowNumber, data);
+                        run3 = false;
+                    } else {
+                        io:println("Invalid emaid id");
+                        continue;
+                    }
+
+                } else {
+                    var op3 = setCellDetailsInGSheet(column, rowNumber, data);
+                    run3 = false;
+                }
+            }
         } else if(operation == 3) {
             int row_num = 0;
             var details = getStudentDetailsFromGSheet();
@@ -53,21 +109,41 @@ public function main() {
             } else {
                 row_num = details.length();
             }
-            io:println(row_num);
+
             string name = io:readln("Enter name: ");
             string subject = io:readln("Enter subject: ");
-            string smarks = io:readln("Enter marks: ");
-            string email = io:readln("Enter email: ");
-            var marks = int.convert(smarks);
+
+            boolean run1 = true;
             int m = 0;
-            if(marks is int){
-                m = marks;
+            while(run1){
+                string smarks = io:readln("Enter marks: ");
+                var marks = int.convert(smarks);
+                if(marks is int){
+                    m = marks;
+                    run1 = false;
+                } else {
+                    io:println("Invalid marks. Enter a number");
+                    continue;
+                }
+            }
+
+            string email = "";
+            boolean run2 = true;
+            while(run2){
+                string emailIn = io:readln("Enter email: ");
+
+                if(emailIn.contains("@")){
+                    email = emailIn;
+                    run2 = false;
+                } else {
+                    io:println("Invalid emaid id");
+                    continue;
+                }
             }
             var op = setStudentDetailsInGSheet("A"+string.convert(row_num+1), "D"+string.convert(row_num+1), name, subject, m, email);
-            //if(op is true) {io:println("Student details added successfully");}
+
         } else if(operation == 4){
             var noti = sendNotification();
-            //if(noti is true){io:println("Notification send successfully");}
         } else {
             io:println("Invalid choice");
         }
