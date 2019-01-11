@@ -1,12 +1,15 @@
-# Ballerina
-Obtain Access Tokens by following this link https://central.ballerina.io/wso2/gmail
+# Ballerina: Google spreadsheet, gmail integration
 
-Configure endpoint parameters with your tokens
+1) Obtain Access Tokens by following this link https://central.ballerina.io/wso2/gmail
 
-Create a google spreadsheet similar to the attached sheet (refer Students Marks.xlsx)
+2) Configure endpoint parameters with your tokens
 
-Obtain the spreadsheet id by extracting the value between the "/d/" and the "/edit" in the URL of your spreadsheet
+3) Create a google spreadsheet similar to the attached sheet (refer Students Marks.xlsx)
 
-Replace sheetID and sheetName with yours as indicated in the code
+4) Obtain the spreadsheet id by extracting the value between the "/d/" and the "/edit" in the URL of your spreadsheet
 
-The module can be run on terminal from the parent folder using the following command: `Ballerina run module`
+5) Replace sheetID and sheetName with yours as indicated in the code
+
+6) The module can be run on terminal from the parent folder using the following command: `ballerina run module`
+
+7) Unit tests can be done using the following command: `ballerina test` from the parent folder
