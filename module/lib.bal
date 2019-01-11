@@ -1,6 +1,5 @@
 import wso2/gmail;
 import wso2/gsheets4;
-import wso2/github4;
 import ballerina/http;
 import ballerina/log;
 import ballerina/io;
@@ -17,6 +16,7 @@ gmail:GmailConfiguration gmailConfig = {
         }
     }
 };
+
 gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
     clientConfig: {
         auth: {
@@ -34,9 +34,8 @@ gmail:Client gmailClient = new(gmailConfig);
 
 public function getStudentDetailsFromGSheet() returns string[][]|error {
     //Read all the values from the sheet
-    string[][] values = check spreadsheetClient->getSheetValues("1MQvXiG2VTzOFSqamjw27cszAjDrpV9mGwtlJjFdLs6E", "Marks");
-    log:printInfo("Retrieved student details from spreadsheet id: " + "1MQvXiG2VTzOFSqamjw27cszAjDrpV9mGwtlJjFdLs6E" + " ; sheet name: "
-            + "Marks");
+    string[][] values = check spreadsheetClient->getSheetValues("sheetID", "sheetName");
+    log:printInfo("Retrieved student details from spreadsheet id: " + "sheetID" + " ; sheet name: " + "sheetName");    //Replace sheetID, sheetName with your sheet id and name
     return values;
 }
 
@@ -61,13 +60,13 @@ public function printStudentDetailsFromGSheet() returns boolean{
 }
 
 public function setCellDetailsInGSheet(string column, int row, string data){
-    var cellData = spreadsheetClient->setCellData("1MQvXiG2VTzOFSqamjw27cszAjDrpV9mGwtlJjFdLs6E", "Marks", column, row, data);
+    var cellData = spreadsheetClient->setCellData("sheetID", "sheetName", column, row, data);    //Replace sheetID, sheetName with your sheet id and name
     io:println("Successfully updated cell data \n");
 }
 
 public function setStudentDetailsInGSheet(string cell_start, string cell_end, string name, string subject, int marks, string email){
     string [][] data = [[name, subject, string.convert(marks), email]];
-    var setData = spreadsheetClient->setSheetValues("1MQvXiG2VTzOFSqamjw27cszAjDrpV9mGwtlJjFdLs6E", "Marks", topLeftCell = cell_start, bottomRightCell = cell_end, data);
+    var setData = spreadsheetClient->setSheetValues("sheetID", "sheetName", topLeftCell = cell_start, bottomRightCell = cell_end, data);        //Replace sheetID, sheetName with your sheet id and name
     io:println("Successfully added student's details \n ");
 }
 
@@ -75,12 +74,12 @@ public function setStudentDetailsInGSheet(string cell_start, string cell_end, st
 public function sendMail(string studentEmail, string name, string subject, string marks)returns boolean{
     gmail:MessageRequest messageRequest = {};
     messageRequest.recipient = studentEmail;
-    messageRequest.sender = "srivathsanmail@gmail.com";
+    messageRequest.sender = "yours@gmail.com";        //Include your emailID inside quotation marks
     messageRequest.subject = subject;
     messageRequest.messageBody = "Hi " + name + "," + "\n" + "Your examination mark is " + marks;
     messageRequest.contentType = gmail:TEXT_HTML;
 
-    var sendMessageResponse = gmailClient->sendMessage("srivathsanmail@gmail.com", untaint messageRequest);
+    var sendMessageResponse = gmailClient->sendMessage("yours@gmail.com", untaint messageRequest);  //Include your emailID inside quotation marks
     string messageId;
     string threadId;
     if (sendMessageResponse is (string, string)){
