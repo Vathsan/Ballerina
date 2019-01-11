@@ -4,7 +4,7 @@
 
 2) Configure endpoint parameters with your tokens
 
-3) Create a google spreadsheet similar to the attached sheet (refer Students Marks.xlsx)
+3) Create a google spreadsheet similar to the one attached (refer Students Marks.xlsx)
 
 4) Obtain the spreadsheet id by extracting the value between the "/d/" and the "/edit" in the URL of your spreadsheet
 
